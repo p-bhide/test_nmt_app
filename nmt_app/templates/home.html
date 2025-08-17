@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Translator {% endblock %}
+
+{% block content %}
+  <form action="/" method="POST" id="translate-form">
+
+    <!-- Table -->
+    <table style="width:100%">
+        <tr>
+            <th>
+                <label for="source_language_select">Source language:</label>
+                <select name="source_language_select" id="source_language_select">
+                    {% for key, value in languages.items() %}
+                        <option value="{{ key }}" {% if key == src %}selected{% endif %}>
+                            {{ value }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </th>
+            <th>
+                <label for="target_language_select">Target language:</label>
+                <select name="target_language_select" id="target_language_select">
+                    {% for key, value in languages.items() %}
+                        <option value="{{ key }}" {% if key == tgt %}selected{% endif %}>
+                            {{ value }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </th>
+        </tr>
+        <tr>
+            <td>
+                <textarea id="input_text" name="input_text">{{ input }}</textarea>
+            </td>
+            <td>
+                <textarea id="translated_text" name="translated_text">{{ translated }}</textarea>
+            </td>
+        </tr>
+    </table>
+    <button id="submit_btn" type="submit">Translate</button>
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" style="display: none;">
+    <p>Loading...</p>
+    <div class="spinner"></div>
+  </div>
+  </form>
+
+
+  
+
+  <!-- JavaScript for showing/hiding spinner -->
+  <script>
+    // Get form and loading spinner elements
+    const form = document.getElementById('translate-form');
+    const spinner = document.getElementById('loading-spinner');
+    const btn = document.getElementById('submit_btn');
+
+    // When the form is submitted, show the spinner
+    form.addEventListener('submit', function(event) {
+      // Prevent the default form submission to handle via JavaScript
+      event.preventDefault();
+
+      // Show the loading spinner
+      spinner.style.display = 'block';
+      btn.style.display = 'none';
+
+      // Simulate waiting for translation (could be AJAX or form submission)
+      setTimeout(function() {
+        form.submit();  // After the delay, submit the form to the server
+      }, 2000);  // 2-second delay as a placeholder for real processing time
+    });
+  </script>
+
+  <style>
+    .spinner {
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid #3498db;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+{% endblock %}
