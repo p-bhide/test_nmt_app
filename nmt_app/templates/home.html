@@ -38,6 +38,10 @@
             </td>
         </tr>
     </table>
+    {% if unsupported_text %}
+      <label for="unsupported_text" style="color: red;">{{ unsupported_text }}</label>
+      </br>
+    {% endif %}
     <button id="submit_btn" type="submit">Translate</button>
     <!-- Loading Spinner -->
     <div id="loading-spinner" style="display: none;">

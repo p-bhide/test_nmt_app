@@ -1,6 +1,8 @@
 import torch
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+from googletrans import Translator
 from IndicTransToolkit.processor import IndicProcessor  # correct import
+
 
 def translate(text, src_lang, tgt_lang, model):
     MODEL_NAME = model
@@ -28,16 +30,39 @@ def translate(text, src_lang, tgt_lang, model):
     translations = processor.postprocess_batch(decoded, lang=tgt_lang)
     return translations
 
+def detect_src_lang(text, src_lang):
+    translator = Translator()
+    detection = translator.detect(text[0])
+    languages = {
+        'eng_Latn': 'en',
+        'hin_Deva': 'hi',
+        'mar_Deva': 'mr',
+        'tam_Taml': 'ta',
+        'ben_Beng': 'bn',
+    }
+    if detection.lang in [ 'en', 'hi', 'mr', 'ta', 'bn']:
+        if languages.get(src_lang) == detection.lang:
+            return "Correct Input Language..."
+        else:
+            return "Language Mismatch..."
+    else:
+        return "Unsupported Language..."
+    
+
 
 def translate_text(text, src_lang, tgt_lang):
-    if src_lang == 'eng_Latn':
-        MODEL_NAME = "ai4bharat/indictrans2-en-indic-dist-200M"
-        return translate(text, src_lang, tgt_lang, MODEL_NAME)
-    elif tgt_lang == 'eng_Latn':
-        MODEL_NAME = "ai4bharat/indictrans2-indic-en-dist-200M"
-        return translate(text, src_lang, tgt_lang, MODEL_NAME)
+    detect_src = detect_src_lang(text, src_lang)
+    if 'correct'.lower() in detect_src.lower():
+        if src_lang == 'eng_Latn':
+            MODEL_NAME = "ai4bharat/indictrans2-en-indic-dist-200M"
+            return translate(text, src_lang, tgt_lang, MODEL_NAME)
+        elif tgt_lang == 'eng_Latn':
+            MODEL_NAME = "ai4bharat/indictrans2-indic-en-dist-200M"
+            return translate(text, src_lang, tgt_lang, MODEL_NAME)
+        else:
+            MODEL_NAME = "ai4bharat/indictrans2-indic-en-dist-200M"
+            new_text = translate(text, src_lang, 'eng_Latn', MODEL_NAME)
+            MODEL_NAME = "ai4bharat/indictrans2-en-indic-dist-200M"
+            return translate(new_text, 'eng_Latn', tgt_lang, MODEL_NAME)
     else:
-        MODEL_NAME = "ai4bharat/indictrans2-indic-en-dist-200M"
-        new_text = translate(text, src_lang, 'eng_Latn', MODEL_NAME)
-        MODEL_NAME = "ai4bharat/indictrans2-en-indic-dist-200M"
-        return translate(new_text, 'eng_Latn', tgt_lang, MODEL_NAME)
+        return False, detect_src 

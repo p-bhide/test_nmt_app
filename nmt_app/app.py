@@ -21,8 +21,11 @@ def translate():
         tgt = request.form.get('target_language_select', 'hin_Deva').strip()
         if text:
             translated = translate_text([text], src, tgt)
-            print(text, src, tgt)
-            return render_template('home.html', input=text, translated=translated[0],
+            if isinstance(translated, list):
+                return render_template('home.html', input=text, translated=translated[0],
+                               languages=languages, src=src, tgt=tgt)
+            else:
+                return render_template('home.html', input=text, unsupported_text=translated[1],
                                languages=languages, src=src, tgt=tgt)
         else:
             return render_template('home.html', languages=languages,
