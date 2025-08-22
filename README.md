@@ -4,7 +4,14 @@ Run the following command to start application locally:
 ```
 sh start_app.sh
 ```
-Note: Initial run will take time to load the models.
+Note: 
+- Initial run will take time to load the models.
+- Currently supported languages are:
+    - English
+    - Hindi
+    - Marathi
+    - Tamil
+    - Bengali
 
 Sample screenshots:
 
