@@ -41,10 +41,7 @@ def detect_src_lang(text, src_lang):
         'ben_Beng': 'bn',
     }
     if detection.lang in [ 'en', 'hi', 'mr', 'ta', 'bn']:
-        if languages.get(src_lang) == detection.lang:
-            return "Correct Input Language..."
-        else:
-            return "Language Mismatch..."
+        return "Correct Input Language..."
     else:
         return "Unsupported Language..."
     
